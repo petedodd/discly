@@ -41,6 +41,7 @@ getHzhist <- function(yr0,age0,yr1,M){
 ##' @param sx sex = Female/Male/Total
 ##' @return matrix ages, years
 ##' @author Pete Dodd
+##' @import data.table
 ##' @export
 getCNdata <- function(cn,sx){
   ZM <- matrix(ncol=length(ymps),nrow=length(magps),
