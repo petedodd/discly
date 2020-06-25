@@ -61,6 +61,7 @@ getCNdata <- function(cn,sx){
 ##' @param dr discount rate (exponential version)
 ##' @return discounted life years
 ##' @author Pete Dodd
+##' @export
 discly <- function(iso3,                #country
                    age,                 #initial age
                    yearnow,             #year now
