@@ -2,5 +2,6 @@
 
 export(discly)
 export(getCNdata)
+export(getCNdataH)
 export(getHzhist)
 import(data.table)

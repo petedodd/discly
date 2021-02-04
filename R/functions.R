@@ -49,9 +49,30 @@ getCNdata <- function(cn,sx){
   ZM
 }
 
+##' Get matrix from data in right format (HIV stratified)
+##'
+##' @title Get input data
+##' @param cn iso3 code for country
+##' @param sx sex = Female/Male/Total
+##' @return matrix ages, years
+##' @author Pete Dodd
+##' @import data.table
+##' @export
+getCNdataH <- function(cn,sx,h='hiv+'){
+    if(h=='hiv+'){
+        ZM <- matrix(ncol=length(ymps),nrow=length(magps),
+                     data=HD[iso3==cn & Sex==sx,mxh])
+    } else {
+        ZM <- matrix(ncol=length(ymps),nrow=length(magps),
+                     data=HD[iso3==cn & Sex==sx,mx0])
+    }
+    ZM
+}
+
 ##' Discounted life years
 ##'
-##' TODO
+##' This calculates discounted life-years, potentially allowing a mortality hazard ratio. It also allows approximate HIV-specific estimates. See README for reference to methodology.
+##' 
 ##' @title discounted life-years
 ##' @param iso3 country
 ##' @param sex Female/Male/Total
@@ -60,7 +81,11 @@ getCNdata <- function(cn,sx){
 ##' @param endyear end year
 ##' @param HR hazard ratio of death if relevant
 ##' @param dr discount rate (exponential version)
+##' @param hiv HIV specific estimates? ('both'/'hiv+'/'hiv-')
 ##' @return discounted life years
+##' @examples
+##' discly('ZWE',5,2020)
+##' discly('ZWE',5,2020,dr=0.03)
 ##' @author Pete Dodd
 ##' @export
 discly <- function(iso3,                #country
@@ -69,9 +94,19 @@ discly <- function(iso3,                #country
                    sex='Total',         #sex:Female/Male/Total
                    endyear=2098,        #year end 2098 max
                    HR=1,                #hazard ratio for mortality
-                   dr=0                 #discount rate (exponential version)
+                   dr=0,                #discount rate (exponential version)
+                   hiv='both'           #HIV-specific estimates?
                    ){
-  zm <- getCNdata(iso3,sex)
-  tmp <- getHzhist(yearnow,age,endyear,zm)
-  sum(exp(-cumsum(HR*tmp+dr)))
+    if(hiv=='both' | !iso3 %in% HD[,iso3]){
+        if(hiv!='both') warning('HIV-specific mortality requested but this country is not included in the relevant data set. Returning whole-population estimates!')
+        zm <- getCNdata(iso3,sex)
+    } else {
+        if(sex=='Total'){
+            sex <- 'Male'
+            warning('Sex has to be Male/Female for HIV-specific estimates. Using Male!')
+        }
+        zm <- getCNdataH(iso3,sex,hiv)
+    }
+    tmp <- getHzhist(yearnow,age,endyear,zm)
+    sum(exp(-cumsum(HR*tmp+dr)))
 }

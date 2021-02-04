@@ -4,8 +4,16 @@
 \alias{discly}
 \title{discounted life-years}
 \usage{
-discly(iso3, age, yearnow, sex = "Total", endyear = 2098, HR = 1,
-  dr = 0)
+discly(
+  iso3,
+  age,
+  yearnow,
+  sex = "Total",
+  endyear = 2098,
+  HR = 1,
+  dr = 0,
+  hiv = "both"
+)
 }
 \arguments{
 \item{iso3}{country}
@@ -21,6 +29,8 @@ discly(iso3, age, yearnow, sex = "Total", endyear = 2098, HR = 1,
 \item{HR}{hazard ratio of death if relevant}
 
 \item{dr}{discount rate (exponential version)}
+
+\item{hiv}{HIV specific estimates? ('both'/'hiv+'/'hiv-')}
 }
 \value{
 discounted life years
@@ -29,7 +39,11 @@ discounted life years
 Discounted life years
 }
 \details{
-TODO
+This calculates discounted life-years, potentially allowing a mortality hazard ratio. It also allows approximate HIV-specific estimates. See README for reference to methodology.
+}
+\examples{
+discly('ZWE',5,2020)
+discly('ZWE',5,2020,dr=0.03)
 }
 \author{
 Pete Dodd
